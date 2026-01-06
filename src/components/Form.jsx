@@ -30,7 +30,7 @@ export default function Form() {
 
   useEffect(() => {
     if (!user || !isAdmin()) {
-      router.push("/SignIn");
+      router.push("/signin");
       return;
     }
     fetchData();

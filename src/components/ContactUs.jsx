@@ -197,7 +197,7 @@ const ContactUs = () => {
     if (!user) {
       // Store intended destination in localStorage
       localStorage.setItem('redirectAfterLogin', '/admin');
-      router.push('/SignIn');
+      router.push('/Signin');
     } else if (!isAdmin()) {
       alert('Access denied. Admin privileges required.');
     } else {

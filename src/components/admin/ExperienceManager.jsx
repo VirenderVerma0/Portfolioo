@@ -29,7 +29,7 @@ const ExperienceManager = () => {
       if (response.status === 401 || response.status === 403) {
         // Invalid or expired token — clear and redirect to sign in
         try { localStorage.removeItem("token"); } catch (e) {}
-        window.location.href = "/SignIn";
+        window.location.href = "/signin";
         return;
       }
 
@@ -124,17 +124,17 @@ const ExperienceManager = () => {
             } else {
               // token invalid — clear and redirect
               try { localStorage.removeItem("token"); } catch (e) {}
-              window.location.href = "/SignIn";
+              window.location.href = "/signin";
               return;
             }
           } catch (e) {
             try { localStorage.removeItem("token"); } catch (er) {}
-            window.location.href = "/SignIn";
+            window.location.href = "/signin";
             return;
           }
         } else {
           try { localStorage.removeItem("token"); } catch (e) {}
-          window.location.href = "/SignIn";
+          window.location.href = "/signin";
           return;
         }
       }
@@ -174,14 +174,14 @@ const ExperienceManager = () => {
             const verifyResp = await fetch('/api/auth/verify', { headers: { Authorization: `Bearer ${token}` } });
             if (verifyResp.ok) {
               console.error('Server rejected delete despite valid token:', resJson || response.statusText);
-            } else {
-              try { localStorage.removeItem("token"); } catch (e) {}
-              window.location.href = "/SignIn";
-              return;
-            }
+        } else {
+          try { localStorage.removeItem("token"); } catch (e) {}
+          window.location.href = "/signin";
+          return;
+        }
           } catch (e) {
             try { localStorage.removeItem("token"); } catch (er) {}
-            window.location.href = "/SignIn";
+            window.location.href = "/signin";
             return;
           }
         } else {

@@ -25,7 +25,7 @@ const SkillsManager = () => {
       const response = await fetch("/api/skills");
       if (response.status === 401 || response.status === 403) {
         try { localStorage.removeItem("token"); } catch (e) {}
-        window.location.href = "/SignIn";
+        window.location.href = "/signin";
         return;
       }
 
@@ -78,17 +78,17 @@ const SkillsManager = () => {
               console.error('Server rejected request despite valid token:', resJson || response.statusText);
             } else {
               try { localStorage.removeItem("token"); } catch (e) {}
-              window.location.href = "/SignIn";
+              window.location.href = "/signin";
               return;
             }
           } catch (e) {
             try { localStorage.removeItem("token"); } catch (er) {}
-            window.location.href = "/SignIn";
+            window.location.href = "/signin";
             return;
           }
         } else {
           try { localStorage.removeItem("token"); } catch (e) {}
-          window.location.href = "/SignIn";
+          window.location.href = "/signin";
           return;
         }
       }
@@ -129,7 +129,7 @@ const SkillsManager = () => {
               console.error('Server rejected delete despite valid token:', resJson || response.statusText);
             } else {
               try { localStorage.removeItem("token"); } catch (e) {}
-              window.location.href = "/SignIn";
+              window.location.href = "/signin";
               return;
             }
           } catch (e) {
@@ -139,7 +139,7 @@ const SkillsManager = () => {
           }
         } else {
           try { localStorage.removeItem("token"); } catch (e) {}
-          window.location.href = "/SignIn";
+          window.location.href = "/signin";
           return;
         }
       }

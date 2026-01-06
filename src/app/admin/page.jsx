@@ -13,7 +13,7 @@ const AdminDashboard = () => {
 
   useEffect(() => {
     if (!user) {
-      router.push("/SignIn");
+      router.push("/signin");
     }
   }, [user, router]);
 

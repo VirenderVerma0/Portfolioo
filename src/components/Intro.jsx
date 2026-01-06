@@ -360,10 +360,10 @@ const Intro = () => {
       >
         <ThreePCShowcase />
       </motion.div> */}
-      {isClient && (
+     {isClient && (
         <motion.div
           ref={modelRef}
-          className="absolute z-10 lg:h-106 lg:w-100 lg:ml-100 lg:-mt-100 md:h-90 md:w-80 md:ml-55 md:-mt-73 sm:h-80 sm:w-100 sm:ml-50 sm:-mt-65"
+          className="absolute z-10 h-80 w-full left-1/2 -translate-x-1/2 -mt-65 sm:h-80 sm:w-100 sm:left-1/2 sm:-translate-x-1/2 sm:-mt-65 md:h-90 md:w-80 md:left-auto md:translate-x-0 md:ml-55 md:-mt-73 lg:h-106 lg:w-100 lg:left-auto lg:ml-100 lg:-mt-90"
           initial={{ opacity: 0 }}
           animate={{ opacity: showModel ? 1 : 0 }}
           transition={{ duration: 0.5, ease: "easeOut" }}

@@ -5,7 +5,7 @@ export async function middleware(request) {
   const { pathname } = request.nextUrl;
 
   // Auth pages that don't require authentication
-  const authPages = ["/SignIn", "/SignUp", "/VerifyOTP", "/ForgotPassword", "/ResetPassword"];
+  const authPages = ["/signin", "/SignUp", "/VerifyOTP", "/ForgotPassword", "/ResetPassword"];
 
   // If it's an auth page, allow access
   if (authPages.includes(pathname)) {
@@ -61,7 +61,7 @@ export async function middleware(request) {
     const token = request.cookies.get("token")?.value;
 
     if (!token) {
-      return NextResponse.redirect(new URL("/SignIn", request.url));
+      return NextResponse.redirect(new URL("/signin", request.url));
     }
 
     try {
@@ -75,7 +75,7 @@ export async function middleware(request) {
 
       return NextResponse.next(); // Token is valid and user is admin
     } catch (error) {
-      return NextResponse.redirect(new URL("/SignIn", request.url));
+      return NextResponse.redirect(new URL("/signin", request.url));
     }
   }
 

@@ -47,7 +47,7 @@ const ResetPasswordContent = () => {
       if (response.ok) {
         setSuccess("Password reset successfully! Redirecting to login...");
         setTimeout(() => {
-          router.push("/SignIn");
+          router.push("/signin");
         }, 2000);
       } else {
         setError(data.error || "Password reset failed");
@@ -160,7 +160,7 @@ const ResetPasswordContent = () => {
         <p className="text-sm text-gray-400 text-center mt-6">
           Remember your password?{" "}
           <button
-            onClick={() => router.push("/SignIn")}
+            onClick={() => router.push("/signin")}
             className="text-indigo-400 hover:underline"
           >
             Sign in

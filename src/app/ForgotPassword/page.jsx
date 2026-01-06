@@ -100,7 +100,7 @@ const ForgotPassword = () => {
 
         <div className="mt-6 text-center">
           <button
-            onClick={() => router.push("/signin")}
+            onClick={() => router.push("/Signin")}
             className="text-sm text-indigo-400 hover:text-indigo-300"
           >
             Back to Sign In

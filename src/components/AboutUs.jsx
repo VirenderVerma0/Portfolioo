@@ -127,11 +127,11 @@ const AboutUs = () => {
           <div className="about-text-content mb-12 lg:mb-16 shadow-2xl transition-shadow duration-300 hover:shadow-blue-500/30 backdrop-blur-sm rounded-2xl  border border-gray-700/50">
             <div className="bg-gray-900/50 backdrop-blur-sm rounded-2xl p-6 sm:p-8 lg:p-10 border border-gray-700/50 shadow-2xl">
               <p className="text-lg sm:text-xl lg:text-xl leading-relaxed text-gray-200 text-center lg:text-left">
-                Hi, I'm <span className="text-blue-400 font-semibold">{myName}</span>, a passionate and skilled Frontend Developer with a knack for crafting visually appealing, interactive, and responsive web applications.
+                Hi, I'm <span className="text-blue-400 font-semibold">{myName}</span>, a passionate and skilled Full-Stack Developer with a knack for crafting visually appealing, interactive, and responsive web applications.
               </p>
               
               <p className="text-lg sm:text-xl lg:text-xl leading-relaxed text-gray-200 mt-6 text-center lg:text-left">
-                Motivated and self-taught Front-End Developer with a strong foundation in HTML, CSS, JavaScript, and React along with hands-on experience building responsive websites and web applications through personal and academic projects. Eager to contribute to real-world development teams, I specialize in turning ideas into digital experiences, ensuring both functionality and user satisfaction.
+                Motivated and self-taught Full-Stack Developer with a strong foundation in HTML, CSS, JavaScript,React Js,Redux-toolkit, Node Js, Express Js, Zoho-catalyst and databases like SQL/MySQL, Catalyst and Mongodb along with hands-on experience building responsive websites and web applications through personal and academic projects. Eager to contribute to real-world development teams, I specialize in turning ideas into digital experiences, ensuring both functionality and user satisfaction.
               </p>
             </div>
           </div>
