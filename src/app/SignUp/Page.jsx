@@ -8,6 +8,7 @@ const Signup = () => {
     email: "",
     password: "",
     confirmPassword: "",
+    profilePhoto: null,
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -15,7 +16,11 @@ const Signup = () => {
   const router = useRouter();
 
   const handleChange = (e) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
+    if (e.target.type === 'file') {
+      setForm({ ...form, [e.target.name]: e.target.files[0] });
+    } else {
+      setForm({ ...form, [e.target.name]: e.target.value });
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -31,6 +36,7 @@ const Signup = () => {
     }
 
     try {
+      // First, register the user
       const response = await fetch("/api/auth/register", {
         method: "POST",
         headers: {
@@ -46,6 +52,43 @@ const Signup = () => {
       const data = await response.json();
 
       if (response.ok) {
+        // If registration successful and user uploaded a photo, upload it
+        if (form.profilePhoto) {
+          try {
+            const formData = new FormData();
+            formData.append('image', form.profilePhoto);
+
+            const uploadResponse = await fetch('/api/upload', {
+              method: 'POST',
+              body: formData,
+            });
+
+            if (uploadResponse.ok) {
+              const uploadData = await uploadResponse.json();
+              const photoUrl = uploadData.data.url;
+
+              // Update user's profile photo
+              const updateResponse = await fetch('/api/user/profile-photo', {
+                method: 'PATCH',
+                headers: {
+                  'Content-Type': 'application/json',
+                  'Authorization': `Bearer ${data.token}`,
+                },
+                body: JSON.stringify({ photoUrl }),
+              });
+
+              if (!updateResponse.ok) {
+                console.warn('Profile photo update failed, but registration was successful');
+              }
+            } else {
+              console.warn('Photo upload failed, but registration was successful');
+            }
+          } catch (photoError) {
+            console.warn('Photo upload error:', photoError);
+            // Don't fail registration if photo upload fails
+          }
+        }
+
         setSuccess("Registration successful! Check your email for OTP.");
         setTimeout(() => {
           router.push(`/VerifyOTP?email=${encodeURIComponent(form.email)}`);
@@ -132,6 +175,20 @@ const Signup = () => {
               required
               className="w-full px-4 py-2 rounded-md bg-[#0f172a] text-gray-200 border border-gray-700 focus:outline-none focus:border-indigo-500"
             />
+          </div>
+
+          <div>
+            <label className="block text-sm text-gray-400 mb-1">Profile Photo (Optional)</label>
+            <input
+              type="file"
+              name="profilePhoto"
+              accept="image/*"
+              onChange={handleChange}
+              className="w-full px-4 py-2 rounded-md bg-[#0f172a] text-gray-200 border border-gray-700 focus:outline-none focus:border-indigo-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-indigo-600 file:text-white hover:file:bg-indigo-700"
+            />
+            <p className="text-xs text-gray-500 mt-1">
+              Supported formats: JPEG, PNG, GIF, WebP, SVG, BMP, TIFF, AVIF, HEIC, HEIF. Max size: 5MB.
+            </p>
           </div>
 
           <button

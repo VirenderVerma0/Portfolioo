@@ -1,4 +1,3 @@
-
 "use client";
 import React, { useState,useEffect } from "react";
 import { motion } from "framer-motion";
@@ -85,36 +84,40 @@ const rightVariants = {
 
 const ExperienceCard = ({ experience }) => (
   <div
-    className="p-6 sm:p-8 rounded-3xl shadow-2xl bg-gray-800/80 backdrop-blur-sm border border-blue-500/30 text-gray-100 
-               transform hover:scale-[1.02] hover:shadow-cyan-400/50 transition-all duration-300 cursor-pointer 
+    className="p-4 sm:p-6 md:p-8 rounded-2xl sm:rounded-3xl shadow-xl sm:shadow-2xl bg-gray-800/80 backdrop-blur-sm border border-blue-500/30 text-gray-100
+               transform hover:scale-[1.01] sm:hover:scale-[1.02] hover:shadow-cyan-400/50 transition-all duration-300 cursor-pointer
                group h-full flex flex-col"
   >
-    <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-2 sm:gap-0 mb-4">
-      <h3 className="text-xl sm:text-2xl font-extrabold text-blue-400 group-hover:text-cyan-300 transition-colors">
-        {experience.title}
-      </h3>
-      <p className="flex items-center text-xs sm:text-sm font-semibold text-gray-400 p-1 px-3 bg-gray-700 rounded-full w-fit">
-        <FaCalendarAlt className="mr-1 text-blue-500" /> {experience.period}
-      </p>
+    <div className="flex flex-col gap-3 mb-4">
+      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-2">
+        <h3 className="text-lg sm:text-xl md:text-2xl font-extrabold text-blue-400 group-hover:text-cyan-300 transition-colors leading-tight">
+          {experience.title}
+        </h3>
+        <p className="flex items-center text-xs sm:text-sm font-semibold text-gray-400 px-2 py-1 sm:px-3 bg-gray-700 rounded-full w-fit shrink-0">
+          <FaCalendarAlt size={16} className="mr-1 sm:mr-2 text-blue-500" /> {experience.period}
+        </p>
+      </div>
+
+      <div className="space-y-2">
+        <p className="flex items-center text-sm sm:text-base text-gray-300">
+          <FaBuilding className="mr-2 text-cyan-500 flex-shrink-0" /> {experience.company}
+        </p>
+        <p className="flex items-center text-xs sm:text-sm text-gray-400">
+          <FaMapMarkerAlt className="mr-2 text-cyan-500 flex-shrink-0" /> {experience.location}
+        </p>
+      </div>
     </div>
 
-    <p className="flex items-center text-sm sm:text-md text-gray-300 mb-2">
-      <FaBuilding className="mr-2 text-cyan-500" /> {experience.company}
-    </p>
-    <p className="flex items-center text-xs sm:text-sm text-gray-400 mb-4">
-      <FaMapMarkerAlt className="mr-2 text-cyan-500" /> {experience.location}
-    </p>
-
-    <ul className="list-none space-y-3 mb-6 flex-grow">
+    <ul className="list-none space-y-2 sm:space-y-3 mb-4 sm:mb-6 flex-grow">
       {experience.description.map((point, index) => (
-        <li key={index} className="flex items-start text-sm leading-relaxed text-gray-300">
-          <FaStar className="mr-3 mt-1 flex-shrink-0 text-yellow-400 text-xs" />
-          {point}
+        <li key={index} className="flex items-start text-xs sm:text-sm leading-relaxed text-gray-300">
+          <FaStar className="mr-2 sm:mr-3 mt-0.5 flex-shrink-0 text-yellow-400 text-xs" />
+          <span className="flex-1">{point}</span>
         </li>
       ))}
     </ul>
 
-    <div className="flex flex-wrap gap-2 pt-4 border-t border-gray-700/50 mt-auto">
+    <div className="flex flex-wrap gap-1.5 sm:gap-2 pt-3 sm:pt-4 border-t border-gray-700/50 mt-auto">
       {experience.techStack.map((tech, index) => (
         <span
           key={index}
@@ -229,35 +232,35 @@ const Experience = () => {
             <div className="hidden md:block absolute left-1/2 transform -translate-x-1/2 w-1 h-full bg-cyan-600/30"></div>
 
           {visibleExperiences.map((exp, index) => {
+            console.log('Rendering experience:', index, exp.id);
             const isLeft = index % 2 === 0;
             const variants = isLeft ? leftVariants : rightVariants;
 
             return (
               <motion.div
                 key={exp.id}
-                className={`flex flex-col md:flex-row mb-12 sm:mb-16 last:mb-0 ${isLeft ? "md:justify-start" : "md:justify-end"} w-full`}
+                className={`flex flex-col md:flex-row mb-12 sm:mb-16 last:mb-0 ${isLeft ? "md:justify-start" : "md:justify-end"} w-full relative`}
                 variants={variants}
                 initial="hidden"
                 whileInView="visible"
-                viewport={{ once: false, amount: 0.1 }}
+                viewport={{ once: true, amount: 0.1 }}
                 transition={{ delay: index * 0.15 }}
               >
-                {/* Timeline dot - different positioning for mobile vs desktop */}
+                {/* Timeline dot - positioned to match card side */}
                 <div
-                  className={`hidden md:flex absolute top-0 w-8 h-8 rounded-full 
-                             bg-cyan-600 border-4 border-[#0f172a] shadow-xl shadow-cyan-500/50 
+                  className={`hidden md:flex absolute top-0 w-8 h-8 rounded-full
+                             bg-cyan-600 border-4 border-[#0f172a] shadow-xl shadow-cyan-500/50
                              items-center justify-center text-white font-bold z-10`}
-                  style={{ left: "50%", transform: "translateX(-50%)" }}
-                >
+                 style={isLeft ? { left: "50%", transform: "translateX(-50%)" } : { right: "50%", transform: "translateX(50%)" }}                >
                   {index + 1}
                 </div>
 
                 {/* Mobile timeline dot */}
-                <div className="md:hidden flex items-center justify-center w-8 h-8 rounded-full bg-cyan-600 border-4 border-[#0f172a] shadow-xl shadow-cyan-500/50 text-white font-bold z-10 mb-4 mx-auto">
+                <div className="md:hidden flex items-center justify-center w-8 h-8 rounded-full bg-cyan-600 border-4 border-[#0f172a] shadow-xl shadow-cyan-500/50 text-white font-bold z-5 mb-4 mx-auto">
                   {index + 1}
                 </div>
 
-                <div className={`w-full md:w-5/12 ${isLeft ? "md:pr-8" : "md:pl-8"}`}>
+                <div className={`w-full md:w-5/12 ${isLeft ? "md:pr-8" : "md:pl-6"}`}>
                   <ExperienceCard experience={exp} />
                 </div>
               </motion.div>

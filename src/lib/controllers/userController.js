@@ -197,5 +197,39 @@ export const userController = {
     } catch (error) {
       return NextResponse.json({ success: false, error: "Password reset failed" }, { status: 500 });
     }
+  },
+
+  // --- UPDATE PROFILE PHOTO ---
+  async updateProfilePhoto(req) {
+    try {
+      await connectDB();
+      const { photoUrl } = await req.json();
+
+      // Get user from token (assuming token is in headers)
+      const authHeader = req.headers.get('authorization');
+      if (!authHeader || !authHeader.startsWith('Bearer ')) {
+        return NextResponse.json({ success: false, error: "Unauthorized" }, { status: 401 });
+      }
+
+      const token = authHeader.split(' ')[1];
+      const jwtSecret = process.env.JWT_SECRET || process.env.JWT_Secret;
+      const decoded = jwt.verify(token, jwtSecret);
+
+      const user = await User.findById(decoded.id);
+      if (!user) {
+        return NextResponse.json({ success: false, error: "User not found" }, { status: 404 });
+      }
+
+      user.profilePhoto = photoUrl;
+      await user.save();
+
+      return NextResponse.json({
+        success: true,
+        message: "Profile photo updated successfully",
+        user: { username: user.username, email: user.email, role: user.role, profilePhoto: user.profilePhoto }
+      }, { status: 200 });
+    } catch (error) {
+      return NextResponse.json({ success: false, error: "Failed to update profile photo" }, { status: 500 });
+    }
   }
 };

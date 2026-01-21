@@ -8,6 +8,7 @@ const PortfolioDropdown = ({ onClose }) => {
 
   const options = [
     { id: "skills", label: "Manage Skills", path: "/manage/skills" },
+    { id: "profile", label: "Manage Profile", path: "/manage/profile" },
     { id: "projects", label: "Manage Projects", path: "/manage/projects" },
     { id: "experience", label: "Manage Experience", path: "/manage/experience" },
   ];

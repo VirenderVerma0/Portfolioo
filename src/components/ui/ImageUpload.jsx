@@ -123,7 +123,7 @@ const ImageUpload = ({ value, onChange, label = "Image", className = "" }) => {
             <img
               src={preview}
               alt="Preview"
-              className="w-full h-32 object-cover"
+              className="w-full h-32 object-contain"
             />
           </div>
 

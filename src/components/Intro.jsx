@@ -1,10 +1,11 @@
 "use client";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap/all";
-import React, { useState, useEffect, useRef, Suspense} from "react";
+import React, { useState, useEffect, useRef, Suspense } from "react";
 import { ReactTyped } from "react-typed";
 import dynamic from "next/dynamic";
 import { motion } from "framer-motion";
+import { useAuth } from "@/context/AuthContext";
 
 const ThreePCShowcase = dynamic(() => import("./ThreePCShowcase"), {
   ssr: false,
@@ -14,6 +15,7 @@ const ThreePCShowcase = dynamic(() => import("./ThreePCShowcase"), {
 // useGLTF.preload("./ThreePCShowcase");
 
 const Intro = () => {
+  const { user } = useAuth();
   const myName = process.env.NEXT_PUBLIC_NAME;
   const pdf = process.env.NEXT_PUBLIC_PDF;
   const modelRef = useRef(null);
@@ -30,28 +32,28 @@ const Intro = () => {
     gsap.fromTo(".info2", { opacity: 0, x: 50 }, { opacity: 1, x: 0, duration: 1, ease: "power3.inOut", stagger: 0.3, duration: 2, delay: 1 });
   }, []);
 
-   useEffect(() => {
-  let timeoutId;
-  const observer = new IntersectionObserver(
-    (entries) => {
-      entries.forEach((entry) => {
-        clearTimeout(timeoutId);
-        if (entry.isIntersecting) {
-          timeoutId = setTimeout(() => setShowModel(true), 200);
-        } else {
-          timeoutId = setTimeout(() => setShowModel(false), 400);
-        }
-      });
-    },
-    { threshold: 0.2 }
-  );
+  useEffect(() => {
+    let timeoutId;
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          clearTimeout(timeoutId);
+          if (entry.isIntersecting) {
+            timeoutId = setTimeout(() => setShowModel(true), 200);
+          } else {
+            timeoutId = setTimeout(() => setShowModel(false), 400);
+          }
+        });
+      },
+      { threshold: 0.2 }
+    );
 
-  if (modelRef.current) observer.observe(modelRef.current);
-  return () => {
-    if (modelRef.current) observer.unobserve(modelRef.current);
-    clearTimeout(timeoutId);
-  };
-}, []);
+    if (modelRef.current) observer.observe(modelRef.current);
+    return () => {
+      if (modelRef.current) observer.unobserve(modelRef.current);
+      clearTimeout(timeoutId);
+    };
+  }, []);
 
 
 
@@ -200,7 +202,7 @@ const Intro = () => {
                     {/* Front Side */}
                     <div className="absolute w-full h-full  backface-hidden">
                       <img
-                        src="/myImg.jpg"
+                        src={user?.profilePhoto }
                         alt="Itz Me"
                         className="object-cover w-full h-full rounded-2xl shadow-md"
                       />
@@ -209,7 +211,7 @@ const Intro = () => {
                     {/* Back Side */}
                     <div className="absolute w-full h-full [transform:rotateY(180deg)] [backface-visibility:hidden] bg-slate-800/60 backdrop-blur-sm flex flex-col justify-center items-center p-4 sm:p-6 rounded-2xl shadow-xl border-4 border-green-400/50">
                       <img
-                        src="/myavtar.png"
+                        src={user?.profilePhoto }
                         alt="Avatar"
                         className="w-16 h-16 sm:w-20 sm:h-20 lg:w-24 lg:h-24 object-contain rounded-full mb-3 sm:mb-4 ring-4 ring-green-400"
                       />
@@ -274,17 +276,17 @@ const Intro = () => {
               <div className="flex items-center justify-center">
                 {/* Avatar Image */}
                 <img
-                  src="/myavtar.png"
+                  src={user?.profilePhoto || "/myavtar.png"}
                   alt="My Avatar"
                   className="
-          h-12 w-12 
-          sm:h-14 sm:w-14 
+          h-12 w-12
+          sm:h-14 sm:w-14
           md:h-16 md:w-16
-          rounded-full 
-          object-cover 
+          rounded-full
+          object-cover
           border-2 border-white/50
           shadow-lg
-          hover:border-white/80 
+          hover:border-white/80
           transition-all duration-300
         "
                 />
@@ -360,7 +362,7 @@ const Intro = () => {
       >
         <ThreePCShowcase />
       </motion.div> */}
-     {isClient && (
+      {isClient && (
         <motion.div
           ref={modelRef}
           className="absolute z-10 h-80 w-full left-1/2 -translate-x-1/2 -mt-65 sm:h-80 sm:w-100 sm:left-1/2 sm:-translate-x-1/2 sm:-mt-65 md:h-90 md:w-80 md:left-auto md:translate-x-0 md:ml-55 md:-mt-73 lg:h-106 lg:w-100 lg:left-auto lg:ml-100 lg:-mt-90"

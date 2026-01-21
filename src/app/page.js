@@ -33,7 +33,7 @@ const Page = () => {
         // initial="hidden"
         whileInView="visible"
         transition={{ duration: 0.8 }}
-        viewport={{ once: false, amount: 0.3 }}
+        viewport={{ once: true, amount: 0.3 }}
       >
         <Intro />
       </motion.section>
@@ -46,7 +46,7 @@ const Page = () => {
         // initial="hidden"
         whileInView="visible"
         transition={{ duration: 0.8 }}
-        viewport={{ once: false, amount: 0.3 }}
+        viewport={{ once: true, amount: 0.3 }}
       >
         <AboutUs />
       </motion.section>
@@ -69,10 +69,10 @@ const Page = () => {
         id="projects"
 
         variants={sectionVariants}
-        
+
         whileInView="visible"
         transition={{ duration: 0.8 }}
-        viewport={{ once: false, amount: 0.3 }}
+        viewport={{ once: true, amount: 0.3 }}
       >
         <Projects />
       </motion.section>
@@ -82,10 +82,10 @@ const Page = () => {
         id="experience"
 
         variants={sectionVariants}
-       
+
         whileInView="visible"
         transition={{ duration: 0.8 }}
-        viewport={{ once: false, amount: 0.3 }}
+        viewport={{ once: true, amount: 0.3 }}
       >
         <Experience />
       </motion.section>
@@ -95,10 +95,10 @@ const Page = () => {
         id="contact"
 
         variants={sectionVariants}
-        
+
         whileInView="visible"
         transition={{ duration: 0.8 }}
-        viewport={{ once: false, amount: 0.3 }}
+        viewport={{ once: true, amount: 0.3 }}
       >
         <ContactUs />
       </motion.section>

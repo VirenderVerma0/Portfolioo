@@ -86,6 +86,12 @@ const ExperienceManager = () => {
 
     const { start, end, isCurrent } = parsePeriod(formData.period || "");
 
+    if (!start) {
+      addToast("Invalid period format. Please use format like 'Jan 2020 - Present' or 'Jan 2020 - Dec 2021'", "error");
+      setSubmitting(false);
+      return;
+    }
+
     const experienceData = {
       role: formData.jobTitle,
       company: formData.company,

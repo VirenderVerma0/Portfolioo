@@ -16,7 +16,7 @@ const userSchema = new mongoose.Schema({
   password: {
     type: String,
     required: true,
-    select: false, // Don't include password in queries by default
+    select: false, 
   },
   role: {
     type: String,
@@ -38,6 +38,10 @@ const userSchema = new mongoose.Schema({
   },
   resetOtpExpires: {
     type: Date,
+  },
+  profilePhoto: {
+    type: String,
+    default: "/myImg.jpg", 
   },
 }, {
   timestamps: true,

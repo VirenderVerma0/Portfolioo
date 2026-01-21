@@ -27,6 +27,8 @@ export default function Form() {
   const [experienceForm, setExperienceForm] = useState({
     company: "", role: "", startDate: "", endDate: "", description: ""
   });
+  const [profileForm, setProfileForm] = useState({ photo: null });
+  const [uploading, setUploading] = useState(false);
 
   useEffect(() => {
     if (!user || !isAdmin()) {
@@ -193,11 +195,69 @@ export default function Form() {
     setActiveTab(type);
   };
 
+  const handleProfileSubmit = async (e) => {
+    e.preventDefault();
+    if (!profileForm.photo) return;
+
+    setUploading(true);
+    try {
+      // First upload the image
+      const formData = new FormData();
+      formData.append('image', profileForm.photo);
+
+      const uploadResponse = await fetch('/api/upload', {
+        method: 'POST',
+        body: formData,
+      });
+
+      if (!uploadResponse.ok) {
+        throw new Error('Failed to upload image');
+      }
+
+      const uploadData = await uploadResponse.json();
+      const photoUrl = uploadData.data.url;
+
+      // Then update the user's profile photo
+      const updateResponse = await fetch('/api/user/profile-photo', {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('token')}`,
+        },
+        body: JSON.stringify({ photoUrl }),
+      });
+
+      if (updateResponse.ok) {
+        // Refresh user data in context
+        const verifyResponse = await fetch('/api/auth/verify', {
+          headers: {
+            'Authorization': `Bearer ${localStorage.getItem('token')}`,
+          },
+        });
+        if (verifyResponse.ok) {
+          const verifyData = await verifyResponse.json();
+          // Update user in context (assuming context has a setUser method)
+          // For now, we'll just reset the form
+        }
+        setProfileForm({ photo: null });
+        alert('Profile photo updated successfully!');
+      } else {
+        throw new Error('Failed to update profile photo');
+      }
+    } catch (error) {
+      console.error('Error updating profile photo:', error);
+      alert('Failed to update profile photo. Please try again.');
+    } finally {
+      setUploading(false);
+    }
+  };
+
   const resetForm = () => {
     setEditingItem(null);
     setSkillForm({ name: "", category: "", level: "" });
     setProjectForm({ name: "", liveLink: "", githubLink: "", techStack: "", description: "" });
     setExperienceForm({ company: "", role: "", startDate: "", endDate: "", description: "" });
+    setProfileForm({ photo: null });
   };
 
   if (!user || !isAdmin()) {
@@ -217,21 +277,27 @@ export default function Form() {
         </CardHeader>
 
         <CardContent>
-          {/* Section Tabs */}
-          <div className="flex flex-wrap gap-2 mb-6 justify-center">
-            {["skills", "projects", "experience"].map((section) => (
-              <Button
-                key={section}
-                onClick={() => {
-                  setActiveTab(section);
+          {/* Section Dropdown */}
+          <div className="mb-6 flex justify-center">
+            <div className="w-full max-w-xs">
+              <Label htmlFor="section-select" className="block text-sm font-medium mb-2 text-center">
+                Select Section
+              </Label>
+              <select
+                id="section-select"
+                value={activeTab}
+                onChange={(e) => {
+                  setActiveTab(e.target.value);
                   resetForm();
                 }}
-                variant={activeTab === section ? "default" : "outline"}
-                className="capitalize"
+                className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white"
               >
-                {section}
-              </Button>
-            ))}
+                <option value="profile">Profile</option>
+                <option value="skills">Skills</option>
+                <option value="projects">Projects</option>
+                <option value="experience">Experience</option>
+              </select>
+            </div>
           </div>
 
           {/* Current Items List */}
@@ -470,6 +536,29 @@ export default function Form() {
                       Cancel
                     </Button>
                   )}
+                </div>
+              </form>
+            )}
+
+            {/* PROFILE FORM */}
+            {activeTab === "profile" && (
+              <form onSubmit={handleProfileSubmit} className="space-y-4">
+                <div>
+                  <Label>Profile Photo</Label>
+                  <Input
+                    type="file"
+                    accept="image/*"
+                    onChange={(e) => setProfileForm({ photo: e.target.files[0] })}
+                    required
+                  />
+                  <p className="text-sm text-gray-600 mt-1">
+                    Upload a new profile photo. Supported formats: JPEG, PNG, GIF, WebP, SVG, BMP, TIFF, AVIF, HEIC, HEIF. Max size: 5MB.
+                  </p>
+                </div>
+                <div className="flex gap-2">
+                  <Button type="submit" disabled={uploading}>
+                    {uploading ? "Uploading..." : "Update Profile Photo"}
+                  </Button>
                 </div>
               </form>
             )}

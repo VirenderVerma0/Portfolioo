@@ -100,6 +100,10 @@ export const AuthProvider = ({ children }) => {
     setUser(null);
   };
 
+  const updateUser = (updatedUserData) => {
+    setUser(updatedUserData);
+  };
+
   const isAdmin = () => {
     return user && user.role === 'admin';
   };
@@ -110,6 +114,7 @@ export const AuthProvider = ({ children }) => {
     login,
     register,
     logout,
+    updateUser,
     isAdmin,
   };
 

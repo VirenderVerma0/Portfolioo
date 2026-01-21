@@ -4,10 +4,12 @@ import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
 import PortfolioDropdown from "@/components/PortfolioDropdown";
 import PortfolioManager from "@/components/PortfolioManager";
+import ProfileManager from "@/components/ProfileManager";
 
 const Navbar = ({ name }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isPortfolioModalOpen, setIsPortfolioModalOpen] = useState(false);
+  const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
   const { user, logout } = useAuth();
   const router = useRouter();
 
@@ -134,6 +136,7 @@ const Navbar = ({ name }) => {
       </div>
 
       {isPortfolioModalOpen && <PortfolioManager onClose={() => setIsPortfolioModalOpen(false)} />}
+      {isProfileModalOpen && <ProfileManager onClose={() => setIsProfileModalOpen(false)} />}
     </nav>
   );
 };

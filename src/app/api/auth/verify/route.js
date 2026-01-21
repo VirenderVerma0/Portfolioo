@@ -29,7 +29,8 @@ export const GET = async (req) => {
       user: {
         username: user.username,
         email: user.email,
-        role: user.role
+        role: user.role,
+        profilePhoto: user.profilePhoto
       }
     }, { status: 200 });
 
