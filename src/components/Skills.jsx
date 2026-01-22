@@ -150,18 +150,19 @@ const particleBurst = {
 };
 
 // Common Skill Card Component with performance optimizations
-const SkillCard = ({ skill, index }) => {
+const SkillCard = React.forwardRef(({ skill, index }, ref) => {
   const IconComp = getTechIconComponent(skill);
-  
+
   return (
     <motion.div
+      ref={ref}
       variants={cardVariants}
       initial="hidden"
       whileInView="visible"
       whileHover="hover"
       whileTap="tap"
-      viewport={{ 
-        once: false, 
+      viewport={{
+        once: false,
         amount: 0.15, // Reduced trigger threshold
         margin: "0px 0px -30px 0px" // Reduced margin for earlier trigger
       }}
@@ -210,7 +211,7 @@ const SkillCard = ({ skill, index }) => {
       </div>
     </motion.div>
   );
-};
+} );
 
 const SkillsPage = () => {
   const [skills, setSkills] = useState([]);
