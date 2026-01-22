@@ -131,7 +131,7 @@ export const userController = {
       return NextResponse.json({
         success: true,
         token,
-        user: { username: user.username, email: user.email, role: user.role }
+        user: { username: user.username, email: user.email, role: user.role, profilePhoto: user.profilePhoto }
       }, { status: 200 });
 
     } catch (error) {

@@ -1,18 +1,10 @@
-# Portfolio Project Implementation Tasks
+# Profile Photo Persistence Fix
 
-## 1. Password Visibility Toggle
-- [x] Create reusable PasswordInput component with eye icon
-- [x] Update SignIn page to use PasswordInput component
-- [x] Update ResetPassword page for newPassword and confirmPassword fields
-- [x] Check and update SignUp page if it exists
+## Completed Tasks
+- [x] Analyzed the codebase to understand profile photo storage mechanism
+- [x] Identified that login API response was missing profilePhoto field
+- [x] Updated userController.js login method to include profilePhoto in response
 
-## 2. Like Button on Admin Side
-- [x] Implement like API route functionality
-- [x] Add like button to ProjectsManager component
-- [x] Update Project model if needed to track likes
-
-## 3. MongoDB Atlas Production Issue
-- [x] Check environment variables setup
-- [x] Ensure proper MongoDB Atlas connection string
-- [x] Add error handling for connection failures
-- [x] Check Vercel deployment configuration
+## Next Steps
+- [ ] Test login functionality to confirm profilePhoto persists after login
+- [ ] Verify that profile photo is displayed correctly in the UI after login
