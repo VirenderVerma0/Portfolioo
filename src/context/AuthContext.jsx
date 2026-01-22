@@ -17,11 +17,16 @@ export const AuthProvider = ({ children }) => {
 
   useEffect(() => {
     // Check if user is logged in on mount
-    const token = localStorage.getItem('token');
-    if (token) {
-      // Verify token with backend
-      verifyToken(token);
-    } else {
+    try {
+      const token = localStorage.getItem('token');
+      if (token) {
+        // Verify token with backend
+        verifyToken(token);
+      } else {
+        setLoading(false);
+      }
+    } catch (error) {
+      console.error('Error accessing localStorage:', error);
       setLoading(false);
     }
   }, []);
@@ -41,7 +46,11 @@ export const AuthProvider = ({ children }) => {
       }
     } catch (error) {
       console.error('Token verification failed:', error);
-      localStorage.removeItem('token');
+      try {
+        localStorage.removeItem('token');
+      } catch (localError) {
+        console.error('Error removing token from localStorage:', localError);
+      }
     } finally {
       setLoading(false);
     }
@@ -59,7 +68,11 @@ export const AuthProvider = ({ children }) => {
 
       if (response.ok) {
         const data = await response.json();
-        localStorage.setItem('token', data.token);
+        try {
+          localStorage.setItem('token', data.token);
+        } catch (error) {
+          console.error('Error storing token in localStorage:', error);
+        }
         setUser(data.user);
         return { success: true };
       } else {
@@ -83,7 +96,11 @@ export const AuthProvider = ({ children }) => {
 
       if (response.ok) {
         const data = await response.json();
-        localStorage.setItem('token', data.token);
+        try {
+          localStorage.setItem('token', data.token);
+        } catch (error) {
+          console.error('Error storing token in localStorage:', error);
+        }
         setUser(data.user);
         return { success: true };
       } else {
@@ -96,7 +113,11 @@ export const AuthProvider = ({ children }) => {
   };
 
   const logout = () => {
-    localStorage.removeItem('token');
+    try {
+      localStorage.removeItem('token');
+    } catch (error) {
+      console.error('Error removing token from localStorage:', error);
+    }
     setUser(null);
   };
 
