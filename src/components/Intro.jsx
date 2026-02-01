@@ -26,6 +26,7 @@ const Intro = () => {
   const [isDownloading, setIsDownloading] = useState(false);
   const [showModel, setShowModel] = useState(true); // Temporarily set to true for testing
   const [isClient, setIsClient] = useState(false);
+  const [publicProfilePhoto, setPublicProfilePhoto] = useState("");
 
   useGSAP(() => {
     gsap.fromTo(".info", { opacity: 0, x: -50 }, { opacity: 1, x: 0, duration: 1, ease: "power3.inOut", stagger: 0.3, duration: 2, delay: 1 });
@@ -57,10 +58,25 @@ const Intro = () => {
 
 
 
-  // Set isClient to true on mount
+  // Set isClient to true on mount and fetch public profile photo
   useEffect(() => {
     setIsClient(true);
+    fetchPublicProfilePhoto();
   }, []);
+
+  const fetchPublicProfilePhoto = async () => {
+    try {
+      const response = await fetch('/api/user/profile-photo-public');
+      if (response.ok) {
+        const data = await response.json();
+        if (data.success && data.profilePhoto) {
+          setPublicProfilePhoto(data.profilePhoto);
+        }
+      }
+    } catch (error) {
+      console.error('Error fetching public profile photo:', error);
+    }
+  };
 
   // Welcome toast on mount
   useEffect(() => {
@@ -202,7 +218,7 @@ const Intro = () => {
                     {/* Front Side */}
                     <div className="absolute w-full h-full  backface-hidden">
                       <img
-                        src={user?.profilePhoto }
+                        src={user?.profilePhoto || publicProfilePhoto || "/myavtar.png"}
                         alt="Itz Me"
                         className="object-cover w-full h-full rounded-2xl shadow-md"
                       />
@@ -211,7 +227,7 @@ const Intro = () => {
                     {/* Back Side */}
                     <div className="absolute w-full h-full [transform:rotateY(180deg)] [backface-visibility:hidden] bg-slate-800/60 backdrop-blur-sm flex flex-col justify-center items-center p-4 sm:p-6 rounded-2xl shadow-xl border-4 border-green-400/50">
                       <img
-                        src={user?.profilePhoto }
+                        src={user?.profilePhoto || publicProfilePhoto || "/myavtar.png"}
                         alt="Avatar"
                         className="w-16 h-16 sm:w-20 sm:h-20 lg:w-24 lg:h-24 object-contain rounded-full mb-3 sm:mb-4 ring-4 ring-green-400"
                       />
@@ -276,7 +292,7 @@ const Intro = () => {
               <div className="flex items-center justify-center">
                 {/* Avatar Image */}
                 <img
-                  src={user?.profilePhoto || "/myavtar.png"}
+                  src={user?.profilePhoto || publicProfilePhoto || "/myavtar.png"}
                   alt="My Avatar"
                   className="
           h-12 w-12
