@@ -1,13 +1,20 @@
 "use client";
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
 
-const AuthContext = createContext();
+// Default context value to prevent undefined destructuring
+const AuthContext = createContext({
+  user: null,
+  loading: true,
+  login: async () => ({ success: false, error: 'Auth context not initialized' }),
+  register: async () => ({ success: false, error: 'Auth context not initialized' }),
+  logout: () => {},
+  updateUser: () => {},
+  isAdmin: () => false,
+});
 
 export const useAuth = () => {
   const context = useContext(AuthContext);
-  if (!context) {
-    throw new Error('useAuth must be used within an AuthProvider');
-  }
+  // No need to throw error - default values are provided
   return context;
 };
 
@@ -15,46 +22,57 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    // Check if user is logged in on mount
-    try {
-      const token = localStorage.getItem('token');
-      if (token) {
-        // Verify token with backend
-        verifyToken(token);
-      } else {
-        setLoading(false);
-      }
-    } catch (error) {
-      console.error('Error accessing localStorage:', error);
-      setLoading(false);
-    }
-  }, []);
-
-  const verifyToken = async (token) => {
+  const verifyToken = useCallback(async (token) => {
     try {
       const response = await fetch('/api/auth/verify', {
         headers: {
           'Authorization': `Bearer ${token}`
         }
       });
+      
       if (response.ok) {
         const data = await response.json();
         setUser(data.user);
       } else {
-        localStorage.removeItem('token');
+        // Token is invalid or expired
+        if (typeof window !== 'undefined') {
+          localStorage.removeItem('token');
+        }
       }
     } catch (error) {
       console.error('Token verification failed:', error);
-      try {
+      if (typeof window !== 'undefined') {
         localStorage.removeItem('token');
-      } catch (localError) {
-        console.error('Error removing token from localStorage:', localError);
       }
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
+
+  useEffect(() => {
+    // Check authentication status on component mount
+    const checkAuthStatus = async () => {
+      try {
+        // Only access localStorage on client side
+        if (typeof window !== 'undefined') {
+          const token = localStorage.getItem('token');
+          if (token) {
+            await verifyToken(token);
+          } else {
+            setLoading(false);
+          }
+        } else {
+          // Server-side: skip auth check
+          setLoading(false);
+        }
+      } catch (error) {
+        console.error('Error during auth initialization:', error);
+        setLoading(false);
+      }
+    };
+
+    checkAuthStatus();
+  }, [verifyToken]);
 
   const login = async (email, password) => {
     try {
@@ -68,19 +86,27 @@ export const AuthProvider = ({ children }) => {
 
       if (response.ok) {
         const data = await response.json();
-        try {
+        
+        // Store token securely
+        if (typeof window !== 'undefined') {
           localStorage.setItem('token', data.token);
-        } catch (error) {
-          console.error('Error storing token in localStorage:', error);
         }
+        
         setUser(data.user);
-        return { success: true };
+        return { success: true, user: data.user };
       } else {
-        const error = await response.json();
-        return { success: false, error: error.error };
+        const errorData = await response.json();
+        return { 
+          success: false, 
+          error: errorData.error || 'Login failed' 
+        };
       }
     } catch (error) {
-      return { success: false, error: 'Network error' };
+      console.error('Login error:', error);
+      return { 
+        success: false, 
+        error: 'Network error. Please check your connection.' 
+      };
     }
   };
 
@@ -96,39 +122,52 @@ export const AuthProvider = ({ children }) => {
 
       if (response.ok) {
         const data = await response.json();
-        try {
+        
+        if (typeof window !== 'undefined') {
           localStorage.setItem('token', data.token);
-        } catch (error) {
-          console.error('Error storing token in localStorage:', error);
         }
+        
         setUser(data.user);
-        return { success: true };
+        return { success: true, user: data.user };
       } else {
-        const error = await response.json();
-        return { success: false, error: error.error };
+        const errorData = await response.json();
+        return { 
+          success: false, 
+          error: errorData.error || 'Registration failed' 
+        };
       }
     } catch (error) {
-      return { success: false, error: 'Network error' };
+      console.error('Registration error:', error);
+      return { 
+        success: false, 
+        error: 'Network error. Please check your connection.' 
+      };
     }
   };
 
-  const logout = () => {
-    try {
+  const logout = useCallback(() => {
+    if (typeof window !== 'undefined') {
       localStorage.removeItem('token');
-    } catch (error) {
-      console.error('Error removing token from localStorage:', error);
     }
     setUser(null);
-  };
+    // Optional: Redirect to login page
+    if (typeof window !== 'undefined') {
+      window.location.href = '/login';
+    }
+  }, []);
 
-  const updateUser = (updatedUserData) => {
-    setUser(updatedUserData);
-  };
+  const updateUser = useCallback((updatedUserData) => {
+    setUser(prevUser => ({
+      ...prevUser,
+      ...updatedUserData
+    }));
+  }, []);
 
-  const isAdmin = () => {
+  const isAdmin = useCallback(() => {
     return user && user.role === 'admin';
-  };
+  }, [user]);
 
+  // Context value
   const value = {
     user,
     loading,
@@ -144,4 +183,20 @@ export const AuthProvider = ({ children }) => {
       {children}
     </AuthContext.Provider>
   );
+};
+
+// Optional: Custom hook for easier user access
+export const useUser = () => {
+  const { user, loading } = useAuth();
+  return { user, loading };
+};
+
+// Optional: Custom hook for authentication status
+export const useAuthStatus = () => {
+  const { user, loading } = useAuth();
+  return {
+    isAuthenticated: !!user,
+    isLoading: loading,
+    user,
+  };
 };
