@@ -1,25 +1,28 @@
 "use client";
 import React, { createContext, useContext, useState, useCallback } from "react";
 
-const ToastContext = createContext();
+const defaultToastValue = {
+  addToast: (message, type, duration) => {},
+  removeToast: (id) => {},
+};
+
+const ToastContext = createContext(defaultToastValue);
 
 export const useToast = () => {
   try {
     const ctx = useContext(ToastContext);
-    if (!ctx) {
-      console.warn('ToastContext is undefined, returning no-op functions');
-      return {
-        addToast: (message, type, duration) => {},
-        removeToast: (id) => {},
-      };
+    if (!ctx || typeof ctx !== 'object') {
+      if (typeof window !== 'undefined') {
+        console.warn('ToastContext is invalid, using fallback values');
+      }
+      return { ...defaultToastValue };
     }
     return ctx;
   } catch (error) {
-    console.error('Error accessing ToastContext:', error);
-    return {
-      addToast: (message, type, duration) => {},
-      removeToast: (id) => {},
-    };
+    if (typeof window !== 'undefined') {
+      console.error('Error in useToast hook:', error);
+    }
+    return { ...defaultToastValue };
   }
 };
 

@@ -2,7 +2,7 @@
 import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
 
 // Default context value to prevent undefined destructuring
-const AuthContext = createContext({
+const defaultAuthValue = {
   user: null,
   loading: true,
   login: async () => ({ success: false, error: 'Auth context not initialized' }),
@@ -10,36 +10,25 @@ const AuthContext = createContext({
   logout: () => {},
   updateUser: () => {},
   isAdmin: () => false,
-});
+};
+
+const AuthContext = createContext(defaultAuthValue);
 
 export const useAuth = () => {
   try {
     const context = useContext(AuthContext);
-    // Return context with fallback to default values if somehow undefined
-    if (!context) {
-      console.warn('AuthContext is undefined, returning default values');
-      return {
-        user: null,
-        loading: true,
-        login: async () => ({ success: false, error: 'Auth context not initialized' }),
-        register: async () => ({ success: false, error: 'Auth context not initialized' }),
-        logout: () => {},
-        updateUser: () => {},
-        isAdmin: () => false,
-      };
+    if (!context || typeof context !== 'object') {
+      if (typeof window !== 'undefined') {
+        console.warn('AuthContext is invalid, using fallback values', context);
+      }
+      return { ...defaultAuthValue };
     }
     return context;
   } catch (error) {
-    console.error('Error accessing AuthContext:', error);
-    return {
-      user: null,
-      loading: true,
-      login: async () => ({ success: false, error: 'Auth context not initialized' }),
-      register: async () => ({ success: false, error: 'Auth context not initialized' }),
-      logout: () => {},
-      updateUser: () => {},
-      isAdmin: () => false,
-    };
+    if (typeof window !== 'undefined') {
+      console.error('Error in useAuth hook:', error);
+    }
+    return { ...defaultAuthValue };
   }
 };
 
