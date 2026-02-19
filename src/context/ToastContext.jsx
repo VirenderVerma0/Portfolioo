@@ -9,21 +9,31 @@ const defaultToastValue = {
 const ToastContext = createContext(defaultToastValue);
 
 export const useToast = () => {
+  let ctx;
+  
   try {
-    const ctx = useContext(ToastContext);
-    if (!ctx || typeof ctx !== 'object') {
-      if (typeof window !== 'undefined') {
-        console.warn('ToastContext is invalid, using fallback values');
-      }
-      return { ...defaultToastValue };
-    }
-    return ctx;
+    ctx = useContext(ToastContext);
   } catch (error) {
     if (typeof window !== 'undefined') {
-      console.error('Error in useToast hook:', error);
+      console.error('Error accessing ToastContext:', error);
     }
     return { ...defaultToastValue };
   }
+
+  if (!ctx || typeof ctx !== 'object') {
+    if (typeof window !== 'undefined') {
+      console.warn('ToastContext is invalid, using fallback values');
+    }
+    return { ...defaultToastValue };
+  }
+
+  // Ensure all required functions exist
+  const safeContext = {
+    addToast: typeof ctx.addToast === 'function' ? ctx.addToast : defaultToastValue.addToast,
+    removeToast: typeof ctx.removeToast === 'function' ? ctx.removeToast : defaultToastValue.removeToast,
+  };
+
+  return safeContext;
 };
 
 let idCounter = 1;

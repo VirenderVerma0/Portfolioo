@@ -15,21 +15,39 @@ const defaultAuthValue = {
 const AuthContext = createContext(defaultAuthValue);
 
 export const useAuth = () => {
+  // Initialize context safely
+  let context;
+  
   try {
-    const context = useContext(AuthContext);
-    if (!context || typeof context !== 'object') {
-      if (typeof window !== 'undefined') {
-        console.warn('AuthContext is invalid, using fallback values', context);
-      }
-      return { ...defaultAuthValue };
-    }
-    return context;
+    context = useContext(AuthContext);
   } catch (error) {
+    // Context might not be available in some scenarios
     if (typeof window !== 'undefined') {
-      console.error('Error in useAuth hook:', error);
+      console.error('Error accessing AuthContext:', error);
     }
     return { ...defaultAuthValue };
   }
+
+  // Validate context value
+  if (!context || typeof context !== 'object') {
+    if (typeof window !== 'undefined') {
+      console.warn('AuthContext is invalid, using fallback values');
+    }
+    return { ...defaultAuthValue };
+  }
+
+  // Ensure all required properties exist
+  const safeContext = {
+    user: context.user ?? null,
+    loading: context.loading ?? true,
+    login: typeof context.login === 'function' ? context.login : defaultAuthValue.login,
+    register: typeof context.register === 'function' ? context.register : defaultAuthValue.register,
+    logout: typeof context.logout === 'function' ? context.logout : defaultAuthValue.logout,
+    updateUser: typeof context.updateUser === 'function' ? context.updateUser : defaultAuthValue.updateUser,
+    isAdmin: typeof context.isAdmin === 'function' ? context.isAdmin : defaultAuthValue.isAdmin,
+  };
+
+  return safeContext;
 };
 
 export const AuthProvider = ({ children }) => {
