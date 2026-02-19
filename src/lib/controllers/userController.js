@@ -108,7 +108,7 @@ export const userController = {
       const user = await User.findOne({ email }).select("+password");
 
       if (!user) {
-        return NextResponse.json({ success: false, error: "Invalid credentials" }, { status: 401 });
+        return NextResponse.json({ success: false, error: "Id or password is incorrect" }, { status: 401 });
       }
 
       if (!user.isVerified) {
@@ -117,7 +117,7 @@ export const userController = {
 
       const isMatch = await bcrypt.compare(password, user.password);
       if (!isMatch) {
-        return NextResponse.json({ success: false, error: "Invalid credentials" }, { status: 401 });
+        return NextResponse.json({ success: false, error: "Id or password is incorrect" }, { status: 401 });
       }
 
       // Generate JWT Token
