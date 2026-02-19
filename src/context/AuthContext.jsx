@@ -13,9 +13,34 @@ const AuthContext = createContext({
 });
 
 export const useAuth = () => {
-  const context = useContext(AuthContext);
-  // No need to throw error - default values are provided
-  return context;
+  try {
+    const context = useContext(AuthContext);
+    // Return context with fallback to default values if somehow undefined
+    if (!context) {
+      console.warn('AuthContext is undefined, returning default values');
+      return {
+        user: null,
+        loading: true,
+        login: async () => ({ success: false, error: 'Auth context not initialized' }),
+        register: async () => ({ success: false, error: 'Auth context not initialized' }),
+        logout: () => {},
+        updateUser: () => {},
+        isAdmin: () => false,
+      };
+    }
+    return context;
+  } catch (error) {
+    console.error('Error accessing AuthContext:', error);
+    return {
+      user: null,
+      loading: true,
+      login: async () => ({ success: false, error: 'Auth context not initialized' }),
+      register: async () => ({ success: false, error: 'Auth context not initialized' }),
+      logout: () => {},
+      updateUser: () => {},
+      isAdmin: () => false,
+    };
+  }
 };
 
 export const AuthProvider = ({ children }) => {

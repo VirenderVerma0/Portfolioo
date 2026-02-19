@@ -4,9 +4,23 @@ import React, { createContext, useContext, useState, useCallback } from "react";
 const ToastContext = createContext();
 
 export const useToast = () => {
-  const ctx = useContext(ToastContext);
-  if (!ctx) throw new Error("useToast must be used within ToastProvider");
-  return ctx;
+  try {
+    const ctx = useContext(ToastContext);
+    if (!ctx) {
+      console.warn('ToastContext is undefined, returning no-op functions');
+      return {
+        addToast: (message, type, duration) => {},
+        removeToast: (id) => {},
+      };
+    }
+    return ctx;
+  } catch (error) {
+    console.error('Error accessing ToastContext:', error);
+    return {
+      addToast: (message, type, duration) => {},
+      removeToast: (id) => {},
+    };
+  }
 };
 
 let idCounter = 1;
