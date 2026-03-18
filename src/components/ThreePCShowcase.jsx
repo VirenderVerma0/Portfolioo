@@ -46,12 +46,12 @@ function useMonitorTexture({ width = 1600, height = 900 } = {}) {
         const codeX = editorX + lnW + 10;
         const codeLines = [
             "import React from 'react'",
-            "// A single-file component for Pappu's portfolio",
+            "// A single-file component for Virender Verma's portfolio",
             "function HeroSection() {",
             "  return (",
             "    <div className='hero-card'>",
             "      <h1 className='text-3xl text-white'>Hi, I'm</h1>",
-            "      <h2 className='text-6xl text-purple-400'>Pappu</h2>",
+            "      <h2 className='text-6xl text-purple-400'>Virender Verma</h2>",
             "      <p className='text-lg text-gray-400'>A professional Front-end Web Developer</p>",
             "    </div>",
             "  );",
@@ -104,7 +104,7 @@ function useMonitorTexture({ width = 1600, height = 900 } = {}) {
 
         ctx.fillStyle = "#a78bfa";
         ctx.font = "56px Inter, sans-serif";
-        ctx.fillText("Pappu", heroX + 25, heroY + 200);
+        ctx.fillText("Virender Verma ", heroX + 25, heroY + 200);
 
         ctx.fillStyle = "#a1a1a1";
         ctx.font = "20px Inter, sans-serif";
@@ -469,11 +469,11 @@ export default function ThreePCShowcase() {
                     />
                 </Canvas>
 
-                <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 text-center hidden sm:block">
-                    <div className="bg-black/60 backdrop-blur-sm text-white/80 text-sm px-4 py-2 rounded-full border border-white/20">
+                {/* <div className="absolute  left-1/2 transform -translate-x-1/2 text-center hidden sm:block">
+                    <div className="bg-black/60 backdrop-blur-sm text-white/80 text-sm px-4 py-1 rounded-full border border-white/20">
                         🖱️ Drag to rotate • 🔍 Scroll to zoom • 🔄 Auto-rotating
                     </div>
-                </div>
+                </div> */}
             </div>
         </div>
     );

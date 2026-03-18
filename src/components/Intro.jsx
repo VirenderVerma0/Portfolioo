@@ -153,8 +153,7 @@ const Intro = () => {
 
             <div className="w-full max-w-2xl font-sans text-lg sm:text-xl lg:text-2xl mt-4 lg:mt-6 text-center lg:text-left">
               <p className="text-white leading-relaxed">
-                Full-Stack Software Developer specializing in React, Node.js, Next.js, Nest.js and AWS to build scalable, high-performance web applications.
-              </p>
+                Full-Stack Software Developer specializing in React, Node.js, Next.js, Express.js, MongoDB, MySQL, and PostgreSQL, building scalable and high-performance web applications.              </p>
             </div>
 
             {/* Download Resume Button */}
@@ -381,7 +380,7 @@ const Intro = () => {
       {isClient && (
         <motion.div
           ref={modelRef}
-          className="absolute z-10 h-80 w-full left-1/2 -translate-x-1/2 -mt-65 sm:h-80 sm:w-100 sm:left-1/2 sm:-translate-x-1/2 sm:-mt-65 md:h-90 md:w-80 md:left-auto md:translate-x-0 md:ml-55 md:-mt-73 lg:h-106 lg:w-100 lg:left-auto lg:ml-100 lg:-mt-90"
+          className="absolute z-10 h-80 w-full left-1/2 -translate-x-1/2 -mt-65 sm:h-80 sm:w-100 sm:left-1/2 sm:-translate-x-1/2 sm:-mt-65 md:h-90 md:w-80 md:left-auto md:translate-x-0 md:ml-55 md:-mt-73 lg:h-106 lg:w-100 lg:left-auto lg:ml-100 lg:-mt-80"
           initial={{ opacity: 0 }}
           animate={{ opacity: showModel ? 1 : 0 }}
           transition={{ duration: 0.5, ease: "easeOut" }}
