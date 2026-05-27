@@ -43,6 +43,10 @@ const userSchema = new mongoose.Schema({
     type: String,
     default: "/myImg.jpg", 
   },
+  resumeUrl: {
+    type: String,
+    default: ""
+  }
 }, {
   timestamps: true,
 });

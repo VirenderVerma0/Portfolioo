@@ -98,6 +98,21 @@ export const userController = {
     }
   },
 
+  // --- GET PUBLIC RESUME ---
+  async getPublicResume() {
+    try {
+      await connectDB();
+      const user = await User.findOne({ role: 'admin' }).lean();
+      if (!user || !user.resumeUrl) {
+        return NextResponse.json({ success: false, error: 'Resume not available' }, { status: 404 });
+      }
+
+      return NextResponse.json({ success: true, resumeUrl: user.resumeUrl }, { status: 200 });
+    } catch (error) {
+      return NextResponse.json({ success: false, error: 'Could not fetch resume' }, { status: 500 });
+    }
+  },
+
   // --- LOGIN ---
   async login(req) {
     try {
@@ -131,7 +146,7 @@ export const userController = {
       return NextResponse.json({
         success: true,
         token,
-        user: { username: user.username, email: user.email, role: user.role, profilePhoto: user.profilePhoto }
+        user: { username: user.username, email: user.email, role: user.role, profilePhoto: user.profilePhoto, resumeUrl: user.resumeUrl }
       }, { status: 200 });
 
     } catch (error) {

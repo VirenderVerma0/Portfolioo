@@ -27,6 +27,7 @@ const Intro = () => {
   const [showModel, setShowModel] = useState(true); // Temporarily set to true for testing
   const [isClient, setIsClient] = useState(false);
   const [publicProfilePhoto, setPublicProfilePhoto] = useState("");
+  const [publicResumeUrl, setPublicResumeUrl] = useState("");
 
   useGSAP(() => {
     gsap.fromTo(".info", { opacity: 0, x: -50 }, { opacity: 1, x: 0, duration: 1, ease: "power3.inOut", stagger: 0.3, duration: 2, delay: 1 });
@@ -62,6 +63,7 @@ const Intro = () => {
   useEffect(() => {
     setIsClient(true);
     fetchPublicProfilePhoto();
+    fetchPublicResume();
   }, []);
 
   const fetchPublicProfilePhoto = async () => {
@@ -78,6 +80,20 @@ const Intro = () => {
     }
   };
 
+  const fetchPublicResume = async () => {
+    try {
+      const response = await fetch('/api/user/resume-public');
+      if (response.ok) {
+        const data = await response.json();
+        if (data.success && data.resumeUrl) {
+          setPublicResumeUrl(data.resumeUrl);
+        }
+      }
+    } catch (error) {
+      console.error('Error fetching public resume:', error);
+    }
+  };
+
   // Welcome toast on mount
   useEffect(() => {
     setShowWelcomeToast(true);
@@ -85,20 +101,31 @@ const Intro = () => {
     return () => clearTimeout(timer);
   }, []);
 
-  const handleDownload = () => {
+  const handleDownload = async () => {
     setIsDownloading(true);
 
-    const link = document.createElement("a");
-    link.href = `/${pdf}`;
-    link.download = pdf;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    setTimeout(() => {
-      setIsDownloading(false);
+    const url = user?.resumeUrl || publicResumeUrl || `/${pdf}`;
+
+    try {
+      const response = await fetch(url);
+      const blob = await response.blob();
+      const downloadUrl = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = downloadUrl;
+      link.download = url.split("/").pop() || "resume";
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(downloadUrl);
       setShowToast(true);
       setTimeout(() => setShowToast(false), 2000);
-    }, 800);
+    } catch (error) {
+      console.error("Download error:", error);
+      setShowToast(true);
+      setTimeout(() => setShowToast(false), 2000);
+    } finally {
+      setIsDownloading(false);
+    }
   };
 
   const handleCardHover = () => {
@@ -191,10 +218,15 @@ const Intro = () => {
                     Downloading...
                   </div>
                 ) : (
-                  "Download CV"
+                  publicResumeUrl ? "Download Latest CV" : "Download CV"
                 )}
               </button>
             </div>
+            {publicResumeUrl && (
+              <p className="mt-3 text-sm text-green-300 text-center lg:text-left">
+                Uploaded resume ready: latest CV will download.
+              </p>
+            )}
           </div>
 
           {/* Right Card Section */}

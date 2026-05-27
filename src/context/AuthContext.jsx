@@ -184,7 +184,7 @@ export const AuthProvider = ({ children }) => {
     setUser(null);
     // Optional: Redirect to login page
     if (typeof window !== 'undefined') {
-      window.location.href = '/login';
+      window.location.href = '/signin';
     }
   }, []);
 

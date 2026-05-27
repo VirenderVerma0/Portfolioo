@@ -20,13 +20,20 @@ const Signin = () => {
     const result = await login(email, password);
 
     if (result.success) {
-      // Check if there's a redirect destination stored
-      const redirectTo = localStorage.getItem('redirectAfterLogin');
-      if (redirectTo) {
-        localStorage.removeItem('redirectAfterLogin');
-        router.push(redirectTo);
+      const user = result.user;
+      
+      // Redirect admin users to admin dashboard
+      if (user && user.role === 'admin') {
+        router.push('/admin');
       } else {
-        router.push("/");
+        // Check if there's a redirect destination stored
+        const redirectTo = localStorage.getItem('redirectAfterLogin');
+        if (redirectTo) {
+          localStorage.removeItem('redirectAfterLogin');
+          router.push(redirectTo);
+        } else {
+          router.push("/");
+        }
       }
     } else {
       setError(result.error);

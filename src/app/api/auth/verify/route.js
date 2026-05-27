@@ -17,7 +17,11 @@ export const GET = async (req) => {
       return NextResponse.json({ success: false, error: "No token provided" }, { status: 401 });
     }
 
-    const decoded = jwt.verify(token, process.env.JWT_Secret);
+    const jwtSecret = process.env.JWT_SECRET || process.env.JWT_Secret;
+    if (!jwtSecret) {
+      return NextResponse.json({ success: false, error: "JWT secret not configured" }, { status: 500 });
+    }
+    const decoded = jwt.verify(token, jwtSecret);
     const user = await User.findById(decoded.id);
 
     if (!user) {

@@ -11,6 +11,7 @@ const PortfolioDropdown = ({ onClose }) => {
     { id: "profile", label: "Manage Profile", path: "/manage/profile" },
     { id: "projects", label: "Manage Projects", path: "/manage/projects" },
     { id: "experience", label: "Manage Experience", path: "/manage/experience" },
+    { id: "resume", label: "Upload Resume", path: "/manage/resume" },
   ];
 
   const handleOptionClick = (path) => {

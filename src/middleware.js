@@ -43,7 +43,11 @@ export async function middleware(request) {
       try {
         // 3. Verify the token using the project's JWT secret
         // Use `JWT_Secret` to match the env variable used elsewhere in the codebase
-        const secret = new TextEncoder().encode(process.env.JWT_Secret);
+        const secretValue = process.env.JWT_SECRET || process.env.JWT_Secret;
+        if (!secretValue) {
+          return NextResponse.json({ success: false, error: "JWT secret not configured" }, { status: 500 });
+        }
+        const secret = new TextEncoder().encode(secretValue);
         const { payload } = await jwtVerify(token, secret);
 
         // Allow logged-in users to manage their portfolio (not just admins)
@@ -65,7 +69,11 @@ export async function middleware(request) {
     }
 
     try {
-    const secret = new TextEncoder().encode(process.env.JWT_Secret);
+    const secretValue = process.env.JWT_SECRET || process.env.JWT_Secret;
+    if (!secretValue) {
+      return NextResponse.json({ success: false, error: "JWT secret not configured" }, { status: 500 });
+    }
+    const secret = new TextEncoder().encode(secretValue);
     const { payload } = await jwtVerify(token, secret);
 
       // Check if user is admin
